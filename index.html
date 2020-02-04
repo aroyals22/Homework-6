@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Weather Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  
+</head>
+
+<body>
+    <div class="containter">
+        <h1>Weather Search</h1>
+        <!--This form is for users to type in city name-->
+        <form id="city-form">
+            <label for="city-input">Enter City</label>
+            <input type="text" id="city-input">
+            <br>
+            <br>
+        <!--This button will trigger our AJAX CALL-->    
+        <input id="find-city" type="submit" value="City Search">
+        </form>
+
+    <br>
+    <br>
+
+    <div class="containter" id= "current-weather-container">
+        <h3>Current Weather Conditions</h3>
+        <div id="city"></div>
+        <div id="date"></div>
+        <div id="icon"></div>
+        <div id="temp"></div>
+        <div id="humidity"></div>
+        <div id="wind"></div>
+        <div id="uv-index"></div>
+     </div>
+    
+    <br>
+    <br>
+
+    <div class="container" id= "five-day-container">
+        <h3>Five Day Outlook</h3>
+        <br>
+        <h4>Today</h4>
+        <div id="day1-date"></div>
+        <div id="day1-icon"></div>
+        <div id="day1-temp"></div>
+        <div id="day1-humidity"></div>  
+        <br>
+        <h4>Tomorrow</h4>
+        <div id="day2-date"></div>
+        <div id="day2-icon"></div>
+        <div id="day2-temp"></div>
+        <div id="day2-humidity"></div>  
+        <br>
+        <h4>Day 3</h4>
+        <div id="day3-date"></div>
+        <div id="day3-icon"></div>
+        <div id="day3-temp"></div>
+        <div id="day3-humidity"></div>  
+        <br>
+        <h4>Day 4</h4>
+        <div id="day4-date"></div>
+        <div id="day4-icon"></div>
+        <div id="day4-temp"></div>
+        <div id="day4-humidity"></div>  
+        <br>
+        <h4>Day 5</h4>
+        <div id="day5-date"></div>
+        <div id="day5-icon"></div>
+        <div id="day5-temp"></div>
+        <div id="day5-humidity"></div>  
+        <br>
+
+
+    </div>
+
+<!--/////////////////////////////////////////////////////////////////////////////////-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+// CURRENT WEATHER//////////////////////////////////////////////////////////////////
+$("#find-city").on("click",function(event){
+event.preventDefault();
+var city = $("#city-input").val().trim();
+var key = "&APPID=e0809daafa468625140b2a787d8b21dd"
+var queryURL = "http://api.openweathermap.org/data/2.5/weather?q="+city+key;
+
+$.ajax({
+    url: queryURL,
+    method: "GET"
+  }).then(function(response) {
+    
+   console.log(response);
+  
+   var cityName=response.name;
+   var currentTemp=Math.floor(((response.main.temp)*1.8)-459.67)+"F";
+   var currentHumidity=response.main.humidity+"%";
+   var currentWind=(response.wind.speed)
+  
+   $("#city").text("Location: " + cityName)
+   $("#temp").text("Current Temp: " + currentTemp)
+   $("#humidity").text("Current Humidity: "+ currentHumidity)
+   $("#wind").text("Wind speed: " + currentWind+"mph")
+     
+  });
+
+// 5 DAY WEATHER/////////////////////////////////////////////////////////////////////
+
+  var queryURL5 = "https://api.openweathermap.org/data/2.5/forecast?q="+city+key;
+  $.ajax({
+    url: queryURL5,
+    method: "GET"
+  }).then(function(response5) {
+   
+   console.log(response5);
+   
+   var unix1=response5.list[0].dt
+   var unix2=response5.list[7].dt
+   var unix3=response5.list[15].dt
+   var unix4=response5.list[23].dt
+   var unix5=response5.list[31].dt
+
+   console.log(unix1)
+   console.log(unix2)
+
+  //////////////DAY ONE////////////////////////////////////////
+   var day1=Date(unix1)
+   var day1Humid=response5.list[0].main.humidity
+   console.log(day1Humid)
+   var day1Temp=Math.floor(((response5.list[0].main.temp)*1.8)-459.67)+"F";
+   console.log(day1Temp)
+   var day1Icon="";
+
+   $("#day1-date").text(day1);
+   $("#day1-temp").text("Temperature: "+day1Temp);
+   $("#day1-humidity").text("Humidity: "+day1Humid+"%");
+// $("#day1-icon").text();
+
+
+////////////////DAY TWO////////////////////////////////////////   
+   var day2=Date(unix2*1000);
+   var day2Humid=response5.list[1].main.humidity
+   var day2Temp=Math.floor(((response5.list[1].main.temp)*1.8)-459.67)
+   var day2Icon=""
+
+   $("#day2-date").text(day2);
+   $("#day2-temp").text("Temperature: "+day2Temp+"F");
+   $("#day2-humidity").text("Humidity: "+day2Humid+"%");
+// $("#day2-icon").text();
+
+////////////////DAY THREE//////////////////////////////////////
+
+   var day3=Date(unix3);
+   var day3Humid=response5.list[2].main.humidity
+   var day3Temp=Math.floor(((response5.list[2].main.temp)*1.8)-459.67)
+   var day3Icon=""
+   $("#day3-date").text(day3);
+   $("#day3-temp").text("Temperature: "+day3Temp+"F");
+   $("#day3-humidity").text("Humidity: "+day3Humid+"%");
+// $("#day3-icon").text();
+////////////////DAY FOUR///////////////////////////////////////
+
+   var day4=Date(unix4);
+   var day4Humid=response5.list[3].main.humidity
+   var day4Temp=Math.floor(((response5.list[3].main.temp)*1.8)-459.67)
+   var day4Icon=""
+   $("#day4-date").text(day4);
+   $("#day4-temp").text("Temperature: "+day4Temp+"F");
+   $("#day4-humidity").text("Humidity: "+day4Humid+"%");
+// $("#day4-icon").text();
+
+////////////////DAY FIVE///////////////////////////////////////
+
+   var day5=Date(unix5);
+   var day5Humid=response5.list[4].main.humidity
+   var day5Temp=Math.floor(((response5.list[4].main.temp)*1.8)-459.67)
+   var day5Icon=""
+   $("#day5-date").text(day5);
+   $("#day5-temp").text("Temperature: "+day5Temp+"F");
+   $("#day5-humidity").text("Humidity: "+day5Humid+"%");
+// $("#day5-icon").text();
+   
+   console.log(day2);
+
+
+  })
+    
+});
+
+
+
+
+</script>
+            
+
+
+
+
+
+
+
+    </div>
+</body>
+</html>
