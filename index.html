@@ -29,8 +29,10 @@
         <h3>Current Weather Conditions</h3>
         <div id="city"></div>
         <div id="date"></div>
-        <div id="icon"></div>
         <div id="temp"></div>
+        <div id="icon">
+            <img id="current-icon" src="" alt="Weather Icon">
+        </div>
         <div id="humidity"></div>
         <div id="wind"></div>
         <div id="uv-index"></div>
@@ -44,41 +46,53 @@
         <br>
         <h4>Today</h4>
         <div id="day1-date"></div>
-        <div id="day1-icon"></div>
         <div id="day1-temp"></div>
+        <div id="icon1">
+            <img id="day1-icon" src="" alt="Weather Icon">
+        </div>
         <div id="day1-humidity"></div>  
         <br>
         <h4>Tomorrow</h4>
         <div id="day2-date"></div>
-        <div id="day2-icon"></div>
         <div id="day2-temp"></div>
+        <div id="icon2">
+            <img id="day2-icon" src="" alt="Weather Icon">
+        </div>
         <div id="day2-humidity"></div>  
         <br>
         <h4>Day 3</h4>
         <div id="day3-date"></div>
-        <div id="day3-icon"></div>
         <div id="day3-temp"></div>
+        <div id="icon3">
+            <img id="day3-icon" src="" alt="Weather Icon">
+        </div>
         <div id="day3-humidity"></div>  
         <br>
         <h4>Day 4</h4>
         <div id="day4-date"></div>
-        <div id="day4-icon"></div>
         <div id="day4-temp"></div>
+        <div id="icon4">
+            <img id="day4-icon" src="" alt="Weather Icon">
+        </div>
         <div id="day4-humidity"></div>  
         <br>
         <h4>Day 5</h4>
         <div id="day5-date"></div>
-        <div id="day5-icon"></div>
         <div id="day5-temp"></div>
+        <div id="icon5">
+            <img id="day5-icon" src="" alt="Weather Icon">
+        </div>
         <div id="day5-humidity"></div>  
         <br>
 
 
     </div>
 
-<!--/////////////////////////////////////////////////////////////////////////////////-->
+<!--//////////////////////////////////JS///////////////////////////////////////////////-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script type="text/javascript">
+
 
 // CURRENT WEATHER//////////////////////////////////////////////////////////////////
 $("#find-city").on("click",function(event){
@@ -98,12 +112,14 @@ $.ajax({
    var currentTemp=Math.floor(((response.main.temp)*1.8)-459.67)+"F";
    var currentHumidity=response.main.humidity+"%";
    var currentWind=(response.wind.speed)
+   var iconCode=response.weather[0].icon;
+   var iconURL="http://openweathermap.org/img/wn/"+iconCode+"@2x.png"
   
    $("#city").text("Location: " + cityName)
    $("#temp").text("Current Temp: " + currentTemp)
    $("#humidity").text("Current Humidity: "+ currentHumidity)
    $("#wind").text("Wind speed: " + currentWind+"mph")
-     
+   $("#current-icon").attr("src",iconURL);  
   });
 
 // 5 DAY WEATHER/////////////////////////////////////////////////////////////////////
@@ -123,66 +139,73 @@ $.ajax({
    var unix5=response5.list[31].dt
 
    console.log(unix1)
-   console.log(unix2)
+   console.log(unix5)
+   console.log(moment(unix5, "x"));
 
   //////////////DAY ONE////////////////////////////////////////
-   var day1=Date(unix1)
+   var day1=moment(response5.list[0].dt_txt).format("MMM DD YYYY");
    var day1Humid=response5.list[0].main.humidity
-   console.log(day1Humid)
    var day1Temp=Math.floor(((response5.list[0].main.temp)*1.8)-459.67)+"F";
-   console.log(day1Temp)
-   var day1Icon="";
+   var day1Icon=response5.list[0].weather[0].icon;
+   iconURL="http://openweathermap.org/img/wn/"+day1Icon+"@2x.png"
 
    $("#day1-date").text(day1);
    $("#day1-temp").text("Temperature: "+day1Temp);
    $("#day1-humidity").text("Humidity: "+day1Humid+"%");
-// $("#day1-icon").text();
+   $("#day1-icon").attr("src",iconURL);
 
 
 ////////////////DAY TWO////////////////////////////////////////   
-   var day2=Date(unix2*1000);
-   var day2Humid=response5.list[1].main.humidity
-   var day2Temp=Math.floor(((response5.list[1].main.temp)*1.8)-459.67)
-   var day2Icon=""
+   var day2=moment(response5.list[7].dt_txt).format("MMM DD YYYY");
+   var day2Humid=response5.list[7].main.humidity
+   var day2Temp=Math.floor(((response5.list[7].main.temp)*1.8)-459.67)
+   var day2Icon=response5.list[7].weather[0].icon;
+   var iconURL2="http://openweathermap.org/img/wn/"+day2Icon+"@2x.png"
 
    $("#day2-date").text(day2);
    $("#day2-temp").text("Temperature: "+day2Temp+"F");
    $("#day2-humidity").text("Humidity: "+day2Humid+"%");
-// $("#day2-icon").text();
+   $("#day2-icon").attr("src",iconURL2);
 
 ////////////////DAY THREE//////////////////////////////////////
 
-   var day3=Date(unix3);
-   var day3Humid=response5.list[2].main.humidity
-   var day3Temp=Math.floor(((response5.list[2].main.temp)*1.8)-459.67)
-   var day3Icon=""
+   var day3=moment(response5.list[15].dt_txt).format("MMM DD YYYY");
+   var day3Humid=response5.list[15].main.humidity
+   var day3Temp=Math.floor(((response5.list[5].main.temp)*1.8)-459.67)
+   var day3Icon=response5.list[15].weather[0].icon;
+   var iconURL3="http://openweathermap.org/img/wn/"+day3Icon+"@2x.png"
+
    $("#day3-date").text(day3);
    $("#day3-temp").text("Temperature: "+day3Temp+"F");
    $("#day3-humidity").text("Humidity: "+day3Humid+"%");
-// $("#day3-icon").text();
+   $("#day3-icon").attr("src",iconURL3);
 ////////////////DAY FOUR///////////////////////////////////////
 
-   var day4=Date(unix4);
-   var day4Humid=response5.list[3].main.humidity
-   var day4Temp=Math.floor(((response5.list[3].main.temp)*1.8)-459.67)
-   var day4Icon=""
+   var day4=moment(response5.list[23].dt_txt).format("MMM DD YYYY");
+   var day4Humid=response5.list[23].main.humidity
+   var day4Temp=Math.floor(((response5.list[23].main.temp)*1.8)-459.67)
+   var day4Icon=response5.list[23].weather[0].icon;
+   var iconURL4="http://openweathermap.org/img/wn/"+day4Icon+"@2x.png"
+
    $("#day4-date").text(day4);
    $("#day4-temp").text("Temperature: "+day4Temp+"F");
    $("#day4-humidity").text("Humidity: "+day4Humid+"%");
-// $("#day4-icon").text();
+   $("#day4-icon").attr("src",iconURL4);
 
 ////////////////DAY FIVE///////////////////////////////////////
 
-   var day5=Date(unix5);
-   var day5Humid=response5.list[4].main.humidity
-   var day5Temp=Math.floor(((response5.list[4].main.temp)*1.8)-459.67)
-   var day5Icon=""
+   var day5=moment(response5.list[31].dt_txt).format("MMM DD YYYY");
+   var day5Humid=response5.list[31].main.humidity
+   var day5Temp=Math.floor(((response5.list[31].main.temp)*1.8)-459.67)
+   var day5Icon=response5.list[31].weather[0].icon;
+   var iconURL5="http://openweathermap.org/img/wn/"+day5Icon+"@2x.png"
+
    $("#day5-date").text(day5);
    $("#day5-temp").text("Temperature: "+day5Temp+"F");
    $("#day5-humidity").text("Humidity: "+day5Humid+"%");
-// $("#day5-icon").text();
+   $("#day5-icon").attr("src",iconURL5);
    
-   console.log(day2);
+   
 
 
   })
